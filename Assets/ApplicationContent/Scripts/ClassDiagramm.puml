@@ -1,0 +1,293 @@
+﻿@startuml
+class EventMessageListener {
+  + ConnectionChanged: UnityAction<bool>
+  + MessageArrived: UnityAction<string>
+  - MESSAGE_ARRIVED_PREFIX: string = "Message arrived: "
+  + OnMessageArrived(msg: string): void
+  + OnConnectionEvent(success: bool): void
+}
+
+class PulseReceiver {
+  + PulseReceived: UnityAction<int>
+  + AccelerationCalculated: UnityAction<float>
+  - _debug: bool
+  - _serialController: SerialController
+  - _pollingRateSeconds: float
+  - _recalculatingCyclePeriod: int
+  - _usePlaceholder: bool
+  - _placeholderPulse: int
+  - _placeholderAcceleration: float
+  + Start(): void
+  + FixedUpdate(): void
+  + OnDestroy(): void
+}
+
+abstract class AbstractProjectile {
+  # levelManager: LevelManager
+  + Start(): void
+  + FixedUpdate(): void
+  + OnTriggerEnter(other: Collider): void
+  + OnDestroy(): void
+  + SetLevelManager(levelManager: LevelManager): void
+  + SetSpawner(projectileSpawner: ProjectileSpawner): void
+  + SetMovementSpeed(movementSpeed: float): void
+  + SetDestroyPoint(destroyPoint: Transform): void
+  {abstract} + PerformAction(): void
+}
+
+class NegativeBrick {
+  - _hpDrain: int = 1
+  - _crashForce: float = 6f
+  - _crashRadius: float = 6f
+  - _destructionTimeSec: float = 2.5f
+  + PerformAction(): void
+  + Crash(force: float, radius: float): void
+}
+
+NegativeBrick --|> AbstractProjectile
+
+class PositiveBrick {
+  - _scorePoints: int
+  - _transformMultiplier: float
+  - _vanishSpeed: float
+  + PerformAction(): void
+  + Vanishing(): void
+}
+
+PositiveBrick --|> AbstractProjectile
+
+class SpawnerSpeed {
+  + ForSpeed: Speed
+  + MovementSpeed: float
+  + SpawnSpeed: float
+}
+
+class SpawnedProjectile {
+  + SpawnedObject: AbstractProjectile
+  + SpawnChance: int
+  + MovementPoints: ObjectMovement[]
+}
+
+class ProjectileSpawner {
+  - _levelManager: LevelManager
+  - _projectiles: SpawnedProjectile[]
+  - _speedSettings: List<SpawnerSpeed>
+  + RemoveProjectileFromSpawnedList(abstractProjectile: AbstractProjectile): void
+  + ChangeSpeed(speed: Speed): void
+}
+
+ProjectileSpawner --|> AbstractSpeedChangingComponent
+
+class PulseCondition
+enum PulseCondition {
+  SLOW
+  NORMAL
+  FAST
+  CRITICAL
+}
+
+class PulseRateCondition {
+  + Rate: float
+  + Condition: PulseCondition
+  + UIBarColor: Color
+}
+
+class AbstractBiofeedbackManager {
+  - _pulseRateConditions: List<PulseRateCondition>
+  - _debugUiBar: UINumberParameterBar
+  - _showDebugUiBar: bool
+  - _uiBarParameterName: string
+  - pulseReceiver: PulseReceiver
+  - pulseCondition: PulseCondition
+  + PulseConditionChange: UnityAction<PulseCondition>
+  + GetCurrentPulseCondition(): PulseCondition
+}
+
+enum Speed {
+  STOP
+  SLOW
+  NORMAL
+  FAST
+}
+
+class AbstractSpeedChangingComponent {
+  {abstract} + ChangeSpeed(speed: Speed): void
+}
+
+class LevelManager {
+  + GameStarted: UnityAction
+  + GameEnded: UnityAction
+  - _hpBar: UIHPBar
+  - _multipleButtons: MultipleButtons
+  - _hpCount: int
+  - _scoreBar: UISmoothChangeNumberParameterBar
+  - _biofeedbackManager: AbstractBiofeedbackManager
+  - _speedChangingComponents: AbstractSpeedChangingComponent[]
+  - _startGame: bool
+  + StartGame(): void
+  + EndGame(): void
+  + DrainHealthPoint(count: int): void
+  + AddScore(count: int): void
+  + AddHealthPoint(count: int): void
+  + ChangeGameSpeedAccordingToPulse(pulseCondition: PulseCondition): void
+}
+
+class PulseRateCondition {
+  + Rate: float
+  + Condition: PulseCondition
+  + UIBarColor: Color
+}
+
+class PulseAccelerationManager {
+  + PulseConditionChange: UnityAction<PulseCondition>
+  + Start(): void
+}
+
+PulseAccelerationManager --|> AbstractBiofeedbackManager
+
+class PulseManager {
+  + PulseConditionChange: UnityAction<PulseCondition>
+  + Start(): void
+}
+
+PulseManager --|> AbstractBiofeedbackManager
+
+class ObjectMovement {
+  - _startPoint: Transform
+  - _endPoint: Transform
+  + Start(): void
+  + DestroyChildren(parent: Transform): void
+  + Update(): void
+  + GetStartPoint(): Transform
+  + GetEndPoint(): Transform
+}
+
+class MultipleButtons {
+  + ButtonsPressed: UnityAction
+  - _objectButtons: ObjectButton[]
+  + Start(): void
+  + OnDestroy(): void
+  + ActivateStartButton(objectButton: ObjectButton): void
+  + Show(): void
+  + Hide(): void
+}
+
+class ObjectButton {
+  + ButtonPressed: UnityAction<ObjectButton>
+  + OnTriggerEnter(other: Collider): void
+}
+
+class BoolVector {
+  + X: bool
+  + Y: bool
+  + Z: bool
+}
+
+class FloatVector {
+  + X: float
+  + Y: float
+  + Z: float
+}
+
+class PositionModification {
+  + FreezePosition: BoolVector
+  + PositionOffset: FloatVector
+  + PositionScale: FloatVector
+}
+
+class ModifiedPuppetAvatar {
+  - _kinectDevice: TrackerHandler
+  - _rootPosition: Transform
+  - _characterRootTransform: Transform
+  - _positionModification: PositionModification
+  + Start(): void
+  + GetMainCamera(): GameObject
+  + GetSkeletonBone(animator: Animator, boneName: string): SkeletonBone
+  + LateUpdate(): void
+  + GetRotationFromDevice(j: int): Quaternion
+  + GetPositionFromDevice(j: int): Vector3
+  + ApplyConstraints(position: Vector3): Vector3
+  + ApplyOffsets(position: Vector3): Vector3
+  + AddOffsetToRootPosition(positionOffset: Vector3): Vector3
+  + ApplyScaleToPosition(position: Vector3): Vector3
+  + RotateFullObject(): void
+}
+
+class PuppetAvatarDeviceConfiguration {
+  + Start(): void
+  + Update(): void
+  + OnApplicationQuit(): void
+}
+
+class SkeletalTrackingProvider {
+  + RunBackgroundThreadAsync(id: int, token: CancellationToken): void
+}
+
+SkeletalTrackingProvider --|> BackgroundDataProvider
+
+class TrackerHandler {
+  + Awake(): void
+  + updateTracker(trackerFrameData: BackgroundData): void
+  + findIndexFromId(frameData: BackgroundData, id: int): int
+  + findClosestTrackedBody(trackerFrameData: BackgroundData): int
+  + turnOnOffSkeletons(): void
+  + renderSkeleton(skeleton: AvatarBody, skeletonNumber: int): void
+  + GetRelativeJointRotation(jointId: JointId): Quaternion
+}
+
+class KeyboardObjectMovement {
+  - _movedObject: Transform
+  - _leftBorder: Transform
+  - _rightBorder: Transform
+  - _forwardBorder: Transform
+  - _backwardBorder: Transform
+  - _walkingSpeed: float
+  - _sitPosition: float
+  + Start(): void
+  + Update(): void
+}
+
+class PlayerBodypart {
+}
+
+class UIHealthPoint {
+  - _activeHeart: Image
+  - _notActiveHeart: Image
+  - _isActive: bool
+  + Start(): void
+  + SetActive(isActive: bool): void
+}
+
+class UIHPBar {
+  + OutOfHP: UnityAction
+  - _hpCount: int
+  - _uiHealthPointPrefab: UIHealthPoint
+  - _prefabSpacing: float
+  + Awake(): void
+  + SetHPCount(count: int): void
+  + ResetHP(): void
+  + AddHPToCurrent(value: int): void
+}
+
+class UINumberParameterBar {
+  - _text: TMP_Text
+  - _parameterName: string
+  - _decimalPoint: int
+  - _barVisibility: bool
+  + Update(): void
+  + SetVisible(visible: bool): void
+  + SetParameterName(parameterName: string): void
+  + SetParameterValue(parameterValue: float): void
+  + SetColor(newColor: Color): void
+}
+
+class UISmoothChangeNumberParameterBar {
+  - _changeParameterSpeed: int
+  + Update(): void
+  + SetParameterValue(parameterValue: float): void
+  + AddValue(addedValue: float): void
+}
+
+UISmoothChangeNumberParameterBar --|> UINumberParameterBar
+
+@enduml
