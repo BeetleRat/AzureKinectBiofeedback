@@ -523,16 +523,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pulseRateConditions:
-  - Rate: 60
+  - Rate: 80
     Condition: 3
     UIBarColor: {r: 1, g: 0, b: 0, a: 1}
-  - Rate: 75
+  - Rate: 160
     Condition: 0
     UIBarColor: {r: 0, g: 0.12565708, b: 1, a: 1}
-  - Rate: 90
+  - Rate: 200
     Condition: 1
     UIBarColor: {r: 0.032075405, g: 1, b: 0.046127524, a: 1}
-  - Rate: 120
+  - Rate: 500
     Condition: 2
     UIBarColor: {r: 0, g: 0.12941177, b: 1, a: 1}
   - Rate: 999
@@ -555,9 +555,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _debug: 1
   _serialController: {fileID: 1520519337}
+  _receivedPulseOffset: 0
   _pollingRateSeconds: 0.1
   _recalculatingCyclePeriod: 10
-  _usePlaceholder: 1
+  _usePlaceholder: 0
   _placeholderPulse: 72
   _placeholderAcceleration: 0
 --- !u!114 &247133886
@@ -1145,7 +1146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &488431872
 Transform:
   m_ObjectHideFlags: 0
@@ -1965,7 +1966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &924135651
 Transform:
   m_ObjectHideFlags: 0
@@ -2978,6 +2979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _debug: 1
   _serialController: {fileID: 25620487}
+  _receivedPulseOffset: 0
   _pollingRateSeconds: 0.1
   _recalculatingCyclePeriod: 10
   _usePlaceholder: 0
@@ -3408,9 +3410,9 @@ MonoBehaviour:
       Z: 1
     PositionOffset:
       X: 0
-      Y: 2
+      Y: 1
       Z: 0
     PositionScale:
-      X: 6
-      Y: 0
-      Z: 0
+      X: 4
+      Y: 1
+      Z: 1

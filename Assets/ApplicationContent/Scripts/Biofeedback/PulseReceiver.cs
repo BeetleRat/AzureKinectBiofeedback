@@ -24,8 +24,11 @@ public class PulseReceiver : MonoBehaviour
 
     [Tooltip("Whether to write debug information to the console")] 
     [SerializeField] private bool _debug = false;
-
+    
     [SerializeField] private SerialController _serialController;
+    
+    [Tooltip("If the device returns an erroneous value, you can use this parameter to correct the result")]
+    [SerializeField] private int _receivedPulseOffset;
 
     [Tooltip("Frequency of requesting a heart rate value from the device")] [Min(0.000001f)] 
     [SerializeField] private float _pollingRateSeconds;
@@ -126,7 +129,7 @@ public class PulseReceiver : MonoBehaviour
         if (messageFromBiofeedback != null && messageFromBiofeedback.Contains(PULSE_PREFIX))
         {
             string pulseNumberAsString = messageFromBiofeedback.Replace(PULSE_PREFIX, "");
-            int receivedPulseNumber = int.Parse(pulseNumberAsString);
+            int receivedPulseNumber = int.Parse(pulseNumberAsString) + _receivedPulseOffset;
             PulseReceived?.Invoke(receivedPulseNumber);
             return receivedPulseNumber;
         }
