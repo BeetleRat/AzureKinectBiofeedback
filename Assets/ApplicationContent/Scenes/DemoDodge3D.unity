@@ -1582,7 +1582,7 @@ MonoBehaviour:
   _text: {fileID: 287084069}
   _parameterName: Acceleration
   _decimalPoint: 3
-  _barVisibility: 0
+  _barVisibility: 1
 --- !u!1 &773825380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2033,9 +2033,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hpBar: {fileID: 1363452357}
-  _multipleButtons: {fileID: 1866423034}
   _hpCount: 15
   _scoreBar: {fileID: 1811763962}
+  _multipleButtons: {fileID: 1866423034}
   _biofeedbackManager: {fileID: 247133884}
   _speedChangingComponents:
   - {fileID: 317782955}
@@ -2093,7 +2093,7 @@ MonoBehaviour:
   _text: {fileID: 578288878}
   _parameterName: Pulse
   _decimalPoint: 0
-  _barVisibility: 0
+  _barVisibility: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,7 @@ public class UINumberParameterBar : MonoBehaviour
     [SerializeField] private string _parameterName;
     [Range(0, 6)] [SerializeField] private int _decimalPoint;
 
-    [FormerlySerializedAs("_barVisability")] [FormerlySerializedAs("_showBar")] [SerializeField]
-    private bool _barVisibility;
+    [SerializeField] private bool _barVisibility;
 
     /// <summary>
     /// <para>Parameter value displayed in UI each frame</para>
